@@ -4,20 +4,16 @@
  *
  * Created on 26 de Junho de 2013, 16:08
  */
+#include <opa_primitives.h>
 
-#ifndef MUTEX_H
-#define	MUTEX_H
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-
-
-
-#ifdef	__cplusplus
+void lock (OPA_int_t *y){
+    while(1){
+                if(OPA_cas_int(y,1,0)) {
+			break;
+		}
+    }
 }
-#endif
 
-#endif	/* MUTEX_H */
-
+void unlock (OPA_int_t *y){
+    OPA_store_int(y,1);;
+}
