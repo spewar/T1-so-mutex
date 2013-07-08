@@ -10,7 +10,7 @@
 #include "mutex.h"
 #include <pthread.h>
 
-#define TAM 10
+#define TAM 9
 
 int qtd_char = 0;      // numero de char na fila
 int ultimo_lido = 0;   // posição do ultimo char lido
@@ -26,7 +26,8 @@ int buffer_cheio(void);
 int buffer_vazio(void);
 void inserir(char c);
 void remover(void);
-
+void *produtor();
+void *consumidor();
 /*
  * Funções soma e subtrai servem para testar o mutex
  */
@@ -37,19 +38,39 @@ int valor;
 
 void main() {
     inic();
-    pthread_t som[50], sub[50];
+   // pthread_t som[50], sub[50];
+    int i;
+    pthread_t prod[30], prod2[30], cons[30];
+    for (i = 0; i < TAM; i++)
+       buffer[i] = 0x20;
     valor = 0;
     printf("Começo da execução\n");
-    int i;
-    for (i = 0; i < 50; i++) {
-        pthread_create(&som[i], NULL, soma, NULL);
-        pthread_create(&sub[i], NULL, subtrai, NULL);
+    
+//    for (i = 0; i < 50; i++) {
+//        pthread_create(&som[i], NULL, soma, NULL);
+//        pthread_create(&sub[i], NULL, subtrai, NULL);
+//    }
+//    for (i = 0; i < 50; i++) {
+//        pthread_join(som[i], NULL);
+//        pthread_join(sub[i], NULL);
+//    }
+//    printf("valor final eh=""%d\n", valor);
+    for (i = 0; i < 10; i++) {
+        pthread_create(&prod[i], NULL, produtor, NULL);
+        pthread_create(&cons[i], NULL, consumidor, NULL);
     }
-    for (i = 0; i < 50; i++) {
-        pthread_join(som[i], NULL);
-        pthread_join(sub[i], NULL);
+    for (i = 0; i < 10; i++) {
+        pthread_create(&prod2[i+10], NULL, produtor, NULL);
     }
-    printf("valor final eh=""%d\n", valor);
+    for (i = 0; i < 10; i++) {
+        pthread_join(prod[i], NULL);
+        pthread_join(cons[i], NULL);
+        pthread_join(prod2[i+10], NULL);
+    }
+    printf("\n\nFila apos execução é\n");
+    for (i = 0; i < TAM; i++)
+        printf("[%c]", buffer[i]);
+    printf("\n");
 }
 
 void *soma() {
@@ -100,4 +121,32 @@ int buffer_cheio(void)
 int buffer_vazio(void)
 {
     return ultimo_lido == ultimo_inserido && qtd_char == 0;
+}
+
+/* função bloqueia acesso a fila e coloca um char m na fila
+ */
+void *produtor() {
+    lock();
+    printf("Produtor criado\n");
+    while (buffer_cheio()){
+        unlock();
+        printf("Fila cheia\n");
+        lock();
+    }
+    inserir('m');
+    unlock();
+}
+
+/* função bloqueia acesso a fila e retira um char da mesma
+ */
+void *consumidor() {
+    lock();
+    printf("Consumidor criado\n");
+    while (buffer_vazio()){
+        unlock();
+        printf("Fila vazia\n");
+        lock();
+    }
+    remover();
+    unlock();
 }
