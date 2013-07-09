@@ -8,7 +8,7 @@
  * 
  */
 
-#define TAM 10
+#define TAM 12
 
 int qtdChar;      // numero de char na fila
 int ultimoLido;   // posição do ultimo char lido

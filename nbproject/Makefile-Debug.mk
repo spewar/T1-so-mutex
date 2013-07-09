@@ -35,7 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/prodcons.o
+	${OBJECTDIR}/sema.o \
+	${OBJECTDIR}/prodcons.o \
+	${OBJECTDIR}/mutex.o \
+	${OBJECTDIR}/fila.o
 
 
 # C Compiler Flags
@@ -62,10 +65,25 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/t1-so-mutex: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/t1-so-mutex ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/sema.o: sema.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sema.o sema.c
+
 ${OBJECTDIR}/prodcons.o: prodcons.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/prodcons.o prodcons.c
+
+${OBJECTDIR}/mutex.o: mutex.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.c
+
+${OBJECTDIR}/fila.o: fila.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/fila.o fila.c
 
 # Subprojects
 .build-subprojects:

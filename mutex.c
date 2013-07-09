@@ -11,18 +11,18 @@
 #include <opa_primitives.h>
 #include "mutex.h"
 
-void inic() {
-    OPA_store_int(&y, 1);
+void inicMut() {
+    OPA_store_int(&mut, 1);
 }
 
 void lock() {
     while (1) {
-        if (OPA_cas_int(&y, 1, 0)) {
+        if (OPA_cas_int(&mut, 1, 0)) {
             break;
         }
     }
 }
 
 void unlock() {
-    OPA_store_int(&y, 1);
+    OPA_store_int(&mut, 1);
 }

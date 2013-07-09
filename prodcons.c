@@ -13,6 +13,7 @@
 #include "mutex.h"
 #include <pthread.h>
 #include "fila.h"
+#include "sema.h"
 /*
  * Funções soma e subtrai servem para testar o mutex
  */
@@ -20,11 +21,13 @@
 // prototipos das funções utilizadas
 void *produtor();
 void *consumidor();
+sema *teste;
 
 void main() {
     inicFila();
-    inic();
-     int i;
+    inicMut();
+    teste = initSema(2);
+    int i;
     pthread_t prod[50], prod2[50], cons[50];
     printf("Começo da execução\n");
     for (i = 0; i < 10; i++) {
@@ -48,27 +51,35 @@ void main() {
 /* função bloqueia acesso a fila circular e coloca um char m na fila
  */
 void *produtor() {
-    lock();
+    //lock();
+    p(teste);
     printf("Produtor criado\n");
     while (bufferCheio()){
-        unlock();
+       // unlock();
+        v(teste);
         printf("Fila cheia\n");
-        lock();
+        //lock();
+        p(teste);
     }
     inserir('m');
-    unlock();
+    //unlock();
+    v(teste);
 }
 
 /* função bloqueia acesso a fila circular e retira um char da mesma
  */
 void *consumidor() {
-    lock();
+    //lock();
+    p(teste);
     printf("Consumidor criado\n");
     while (bufferVazio()){
-        unlock();
+        //unlock();
+        v(teste);
         printf("Fila vazia\n");
-        lock();
+        //lock();
+        p(teste);
     }
     remover();
-    unlock();
+    //unlock();
+    v(teste);
 }

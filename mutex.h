@@ -10,7 +10,7 @@
 
 #include <opa_primitives.h>
 
-OPA_int_t y;
-void inic();
+OPA_int_t mut;
+void inicMut();
 void lock();
 void unlock();
