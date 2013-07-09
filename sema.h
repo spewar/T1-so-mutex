@@ -5,13 +5,13 @@
 // * Created on 8 de Julho de 2013, 18:20
 // */
 //
-//mutex *initMutex();
+#include <pthread.h>
+
 typedef struct sema{
-  int cont;
-  pthread_cond_t cond;
-  pthread_mutex_t aux;
+    OPA_int_t cont;
+    int cont2;
 }sema;
 
-sema *initSema(int qtd);
-void v(sema *s);
-void p(sema *s);
+sema *inicSema(int qtd);
+void v(sema *s, mutex *mut);
+void p(sema *s, mutex *mut);

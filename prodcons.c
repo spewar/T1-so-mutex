@@ -14,33 +14,32 @@
 #include <pthread.h>
 #include "fila.h"
 #include "sema.h"
-/*
- * Funções soma e subtrai servem para testar o mutex
- */
+#define Quant 20 // define o numero de threads que será criado,
+                //caso valor for maior que 50 tem que trocar os vetores das threads
 
 // prototipos das funções utilizadas
 void *produtor();
 void *consumidor();
-sema *teste;
+mutex *teste, *mut, *mut2;
+sema *ocupado, *livre;
 
 void main() {
     inicFila();
-    inicMut();
-    teste = initSema(2);
+    teste = inicMutex();
+    mut = inicMutex();
+    mut2 = inicMutex();
+    livre = inicSema(TAM);
+    ocupado = inicSema(0);
     int i;
-    pthread_t prod[50], prod2[50], cons[50];
+    pthread_t prod[50], cons[50];
     printf("Começo da execução\n");
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < Quant; i++) {
         pthread_create(&prod[i], NULL, produtor, NULL);
         pthread_create(&cons[i], NULL, consumidor, NULL);
     }
-    for (i = 0; i < 10; i++) {
-        pthread_create(&prod2[i+10], NULL, produtor, NULL);
-    }
-    for (i = 0; i < 10; i++) {
-        pthread_join(prod[i], NULL);
-        pthread_join(cons[i], NULL);
-        pthread_join(prod2[i+10], NULL);
+    for (i = 0; i < Quant; i++) {
+    pthread_join(prod[i], NULL);
+    pthread_join(cons[i], NULL);
     }
     printf("\n\nFila apos execução é\n");
     for (i = 0; i < TAM; i++)
@@ -51,35 +50,57 @@ void main() {
 /* função bloqueia acesso a fila circular e coloca um char m na fila
  */
 void *produtor() {
-    //lock();
-    p(teste);
+    //execução funcionando mas não está paralela só usa o mutex
+//    lock(teste);
+//    printf("Produtor criado\n");
+//    while (bufferCheio()){
+//        unlock(teste);
+//        printf("Fila cheia\n");
+//        lock(teste);
+//    }
+//    inserir('m');
+//    unlock(teste);
+    
+    //função usando semaphoros mas não esta funcionando, tem que arrumar o semaphoro
+    p(livre, mut);
+    lock(teste);
     printf("Produtor criado\n");
     while (bufferCheio()){
-       // unlock();
-        v(teste);
+        unlock(teste);
         printf("Fila cheia\n");
-        //lock();
-        p(teste);
+        lock(teste);
     }
     inserir('m');
-    //unlock();
-    v(teste);
+    unlock(teste);
+    v(ocupado, mut2);
 }
 
 /* função bloqueia acesso a fila circular e retira um char da mesma
  */
 void *consumidor() {
-    //lock();
-    p(teste);
+    printf("Consumidor criado\n");
+ 
+    //execução funcionando mas não está paralela
+//    lock(teste);
+//    printf("Consumidor criado\n");
+//    while (bufferVazio()){
+//        unlock(teste);
+//        printf("Fila vazia\n");
+//        lock(teste);
+//    }
+//    remover();
+//    unlock(teste);
+    
+    //função usando semaphoros mas não esta funcionando, tem que arrumar o semaphoro
+    p(ocupado, mut2);
+    lock(teste);
     printf("Consumidor criado\n");
     while (bufferVazio()){
-        //unlock();
-        v(teste);
+        unlock(teste);
         printf("Fila vazia\n");
-        //lock();
-        p(teste);
+        lock(teste);
     }
     remover();
-    //unlock();
-    v(teste);
+    unlock(teste);
+    v(livre, mut);
 }

@@ -7,22 +7,30 @@
  *                   2013/1
  * 
  */
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <opa_primitives.h>
 #include "mutex.h"
 
-void inicMut() {
-    OPA_store_int(&mut, 1);
+mutex *inicMutex(){
+  mutex *aux;
+  aux = (mutex *) malloc(sizeof(mutex));
+  if(aux == NULL){
+    printf("\nNão foi possivel alocar\n");
+    exit(0);
+  }
+  OPA_store_int(&aux->mut, 1); 
+  return aux;
 }
 
-void lock() {
+void lock(mutex *mut) {
     while (1) {
-        if (OPA_cas_int(&mut, 1, 0)) {
+        if (OPA_cas_int(&mut->mut, 1, 0)) {
             break;
         }
     }
 }
 
-void unlock() {
-    OPA_store_int(&mut, 1);
+void unlock(mutex *mut) {
+    OPA_store_int(&mut->mut, 1);
 }

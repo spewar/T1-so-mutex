@@ -12,38 +12,36 @@
 #include <opa_primitives.h>
 #include <pthread.h>
 
-sema *initSema(int qtd){
-  sema *aux;
+sema *inicSema(int qtd){
+    sema *aux;
   aux = (sema *) malloc(sizeof(sema));
   if(aux == NULL){
     printf("\nNão foi possivel alocar\n");
-    exit(0); // Aborta o programa.
+    exit(0);
   }
-  aux->cont= qtd;
-  pthread_cond_init(&aux->cond,NULL);  
+  aux->cont2= qtd;
+  OPA_store_int(&aux->cont, qtd);
   return aux;
 }
   
-void p (sema *s){
-    lock();
-      s->cont--;
-	if(s->cont < 0){
-		pthread_mutex_lock(&s->aux);
-		unlock();
-		pthread_cond_wait(&s->cond,&s->aux);
-		pthread_mutex_unlock(&s->aux);
-	}else{
-		unlock();
-	}
+void p (sema *s, mutex *mut){
+    lock(mut);
+    int i=0;
+    while(s->cont2 <= 0){
+        unlock(mut);
+        lock(mut);
+        if(i > 1000){ // caso exista alguma thread trancada após 100 testes ela eh liberada
+            unlock(mut);
+            break;
+        }
+    }
+    s->cont2--;
+    OPA_decr_int(&s->cont);
+    unlock(mut);
 }
-
-void v (sema *s){
-    lock();
-	s->cont++;
-	if(s->cont <=0){
-		pthread_mutex_lock(&s->aux);
-		pthread_cond_signal(&s->cond);
-		pthread_mutex_unlock(&s->aux);
-	}
-	unlock();
+void v (sema *s, mutex *mut){
+        lock(mut);
+        s->cont2++;
+        OPA_incr_int(&s->cont);
+        unlock(mut);
 }
