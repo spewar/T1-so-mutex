@@ -30,6 +30,10 @@ O produtor/consumidor
 	se a fila está vazia e, se não tiver vazia, consome um elemento da fila e dá unlock no mutex e V no 
 	semáforo livre. Se a fila estiver cheia imprime "Fila vazia" na tela, chama unlock e chama 
 	lock novamente para que possa liberar acesso e outra thread poder consumir o elemento.
+        - Se a fila estiver cheia ou vazia 5000 vezes, ocorre um break na função e a thread é encerrada, não 
+        testando mais a fila e imprimindo a mensagem "Thread Finalizada".
+        - O número de consumidores e produtores é definido no Define Quant do prodcons.c., sendo que
+        as threads são criadas no laço for da linha 36.
 	
 A fila
 	- Fila: o tamanho da fila é definido no DEFINE TAM no fila.h. É uma fila de caracteres, possuindo as
@@ -49,3 +53,13 @@ Testes
 Makefile
 	- Para executar o programa, é necessário entrar na pasta do programa e executar o make all e, após,
 	make teste.
+
+Exemplo
+        - Está sendo executado (caso não haja alteração no código) o programa com:
+            - Tamanho da fila: 6;
+            - Número de consumdores: 6;
+            - Número de produtores: 12.
+
+Resultado
+        - Após a execução, é impresso na tela o resultado final da fila, mostrando cada uma das
+        posições e seus respectivos valores.

@@ -1,12 +1,12 @@
-/*
- *
- *       Universidade Federal de Pelotas
- *           Sistemas Operacionais 
- * Marcelo Machado, Jhonathan Juncal,  Maicon Cardoso
- *        Mutex em produtor-consumidor
- *                 2013/1
- * 
- */
+/* 
+*
+*       Universidade Federal de Pelotas
+*           Sistemas Operacionais 
+* Marcelo Machado, Jhonathan Juncal,  Maicon Cardoso
+*        Mutex em produtor-consumidor
+*                 2013/1
+* 
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@
 #include "fila.h"
 #include "sema.h"
 #define Quant 6  // define o numero de threads que será criado,
-                  // caso valor for maior que 50 tem que trocar os vetores das threads
+// caso valor for maior que 50 tem que trocar os vetores das threads
 
 // prototipos das funções utilizadas
 void *produtor();
@@ -31,7 +31,7 @@ void main() {
     livre = inicSema(TAM);
     ocupado = inicSema(0);
     int i;
-    pthread_t prod[50], cons[50], prod2[20];
+    pthread_t prod[50], cons[50], prod2[50];
     printf("Começo da execução\n");
     for (i = 0; i < Quant; i++) {
         pthread_create(&prod[i], NULL, produtor, NULL);
@@ -39,9 +39,9 @@ void main() {
         pthread_create(&cons[i], NULL, consumidor, NULL);
     }
     for (i = 0; i < Quant; i++) {
-    pthread_join(prod[i], NULL);
-    pthread_join(prod2[i], NULL);
-    pthread_join(cons[i], NULL);
+        pthread_join(prod[i], NULL);
+        pthread_join(prod2[i], NULL);
+        pthread_join(cons[i], NULL);
     }
     printf("\n\nFila apos execução é\n");
     for (i = 0; i < TAM; i++)
@@ -52,13 +52,18 @@ void main() {
 /* função bloqueia acesso a fila circular e coloca um char m na fila
  */
 void *produtor() {
-
+    int cont = 0;
     p(livre, mut);
     lock(teste);
     printf("Produtor criado\n");
-    while (bufferCheio()){
+    while (bufferCheio()) {
         unlock(teste);
         printf("Fila cheia\n");
+        cont++;
+        if (cont == 5000) {
+            printf("Thread Finalizada\n");
+            break;
+        }
         lock(teste);
     }
     inserir('m');
@@ -69,14 +74,19 @@ void *produtor() {
 /* função bloqueia acesso a fila circular e retira um char da mesma
  */
 void *consumidor() {
-    
+    int cont = 0;
     printf("Consumidor criado\n");
     p(ocupado, mut2);
     lock(teste);
     printf("Consumidor criado\n");
-    while (bufferVazio()){
+    while (bufferVazio()) {
         unlock(teste);
         printf("Fila vazia\n");
+        cont++;
+        if (cont == 5000) {
+            printf("Thread Finalizada\n");
+            break;
+        }
         lock(teste);
     }
     remover();
