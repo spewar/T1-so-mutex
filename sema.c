@@ -1,10 +1,13 @@
-///* 
-// * File:   sema.c
-// * Author: marcelo
-// *
-// * Created on 8 de Julho de 2013, 18:21
-// */
-//
+/*
+ *
+ *       Universidade Federal de Pelotas
+ *           Sistemas Operacionais 
+ * Marcelo Machado, Jhonathan Juncal,  Maicon Cardoso
+ *        Mutex em produtor-consumidor
+ *                 2013/1
+ * 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "mutex.h"
@@ -25,23 +28,31 @@ sema *inicSema(int qtd){
 }
   
 void p (sema *s, mutex *mut){
-    lock(mut);
-    int i=0;
-    while(s->cont2 <= 0){
-        unlock(mut);
+        while (OPA_cas_int(&mut->mut, 0, 1))  // compara e troca a variavel mutex de forma atomica.
+             continue;
+        OPA_decr_int(&s->valor);  // decrementa a variavel de forma atomica.
         lock(mut);
-        if(i > 1000){ // caso exista alguma thread trancada após 100 testes ela eh liberada
+        if (s->valor.v < 0) {
             unlock(mut);
-            break;
+            OPA_store_int(&mut->mut, 0);
+            while (OPA_cas_int(&s->block, 0, 1))
+                continue;
+        } else {
+            OPA_store_int(&mut->mut, 0);
+            unlock(mut);
         }
-    }
-    s->cont2--;
-    OPA_decr_int(&s->cont);
-    unlock(mut);
 }
-void v (sema *s, mutex *mut){
+void v(sema *s, mutex *mut) {
+        printf("FunÃ§Ã£o V\n");
+        while (OPA_cas_int(&mut->mut, 0, 1))  // compara e troca a variavel mutex de forma atomica.
+                continue;
+        OPA_incr_int(&s->valor);  // incrementa a variavel de forma atomica.
         lock(mut);
-        s->cont2++;
-        OPA_incr_int(&s->cont);
+        if (s->valor.v <= 0) {
+                while (!s->block.v)
+                        continue;
         unlock(mut);
+        OPA_store_int(&s->block, 0);
+        }
+        OPA_store_int(&mut->mut, 0);
 }

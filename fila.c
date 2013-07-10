@@ -1,10 +1,10 @@
 /*
- 
- *      Universidade Federal de Pelotas
+ *
+ *       Universidade Federal de Pelotas
  *           Sistemas Operacionais 
- * Marcelo Silveira, Jhonathan Juncal,  Maicon Cardoso
- *          Mutex em produtor-consumidor
- *                   2013/1
+ * Marcelo Machado, Jhonathan Juncal,  Maicon Cardoso
+ *        Mutex em produtor-consumidor
+ *                 2013/1
  * 
  */
 

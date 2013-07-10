@@ -1,10 +1,10 @@
 /*
- 
- *      Universidade Federal de Pelotas
+ *
+ *       Universidade Federal de Pelotas
  *           Sistemas Operacionais 
- * Marcelo Silveira, Jhonathan Juncal,  Maicon Cardoso
- *          Mutex em produtor-consumidor
- *                   2013/1
+ * Marcelo Machado, Jhonathan Juncal,  Maicon Cardoso
+ *        Mutex em produtor-consumidor
+ *                 2013/1
  * 
  */
 
@@ -14,8 +14,8 @@
 #include <pthread.h>
 #include "fila.h"
 #include "sema.h"
-#define Quant 20 // define o numero de threads que será criado,
-                //caso valor for maior que 50 tem que trocar os vetores das threads
+#define Quant 20  // define o numero de threads que será criado,
+                  // caso valor for maior que 50 tem que trocar os vetores das threads
 
 // prototipos das funções utilizadas
 void *produtor();
