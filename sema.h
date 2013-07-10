@@ -10,9 +10,9 @@
 
 #include <pthread.h>
 
+//estrutura do tipo semaphoro 2 OPA_int_t que são utilizados para controle
 typedef struct sema{
     OPA_int_t valor;
-    OPA_int_t mutex;
     OPA_int_t block;
 }sema;
 

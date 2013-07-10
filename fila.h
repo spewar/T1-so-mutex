@@ -8,7 +8,7 @@
  * 
  */
 
-#define TAM 6 // define o tamanho maximo da fila
+#define TAM 5 // define o tamanho maximo da fila
 
 int qtdChar;      // numero de char na fila
 int ultimoLido;   // posição do ultimo char lido

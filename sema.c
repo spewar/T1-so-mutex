@@ -22,34 +22,32 @@ sema *inicSema(int qtd){
     printf("\nNão foi possivel alocar\n");
     exit(0);
   }
-  OPA_store_int(&aux->valor, qtd);
+  OPA_store_int(&aux->valor, qtd); // grava na variavel valor o numero passado por parametro
   return aux;
 }
   
 void p (sema *s, mutex *mut){
-       printf("FunÃ§Ã£o P\n");
-        while (OPA_cas_int(&s->mutex, 0, 1)) //Compara e troca a variÃ¡vel mutex, de forma atÃ´mica.
+        while (OPA_cas_int(&mut->mut, 0, 1))
             continue;
-        OPA_decr_int(&s->valor); //Decrementa a variÃ¡vel de forma atÃ´mica.
+        OPA_decr_int(&s->valor); //Decrementa a variavel de forma atomica.
         if (s->valor.v < 0) {
             unlock(mut);
-            OPA_store_int(&s->mutex, 0);
+            OPA_store_int(&mut->mut, 0);
             while (OPA_cas_int(&s->block, 0, 1))
                 continue;
         } else {
-            OPA_store_int(&s->mutex, 0);
+            OPA_store_int(&mut->mut, 0);
         }
 }
 
 void v(sema *s, mutex *mut) {
-    printf("FunÃ§Ã£o V\n");
-    while (OPA_cas_int(&s->mutex, 0, 1)) //Compara e troca a variÃ¡vel mutex, de forma atÃ´mica.
+    while (OPA_cas_int(&mut->mut, 0, 1))
         continue;
-    OPA_incr_int(&s->valor); //Incrementa a variÃ¡vel de forma atÃ´mica.
+    OPA_incr_int(&s->valor); //Incrementa a variavel atomicamente.
     if (s->valor.v <= 0) {
         while (!s->block.v)
             continue;
         OPA_store_int(&s->block, 0);
     }
-    OPA_store_int(&s->mutex, 0);
+    OPA_store_int(&mut->mut, 0);
 }

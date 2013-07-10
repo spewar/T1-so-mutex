@@ -26,8 +26,8 @@ sema *ocupado, *livre;
 void main() {
     inicFila();
     teste = inicMutex();
-    mut = inicMutex();
-    mut2 = inicMutex();
+    mut = inic2Mutex();
+    mut2 = inic2Mutex();
     livre = inicSema(TAM);
     ocupado = inicSema(0);
     int i;
@@ -53,7 +53,6 @@ void main() {
  */
 void *produtor() {
 
-    //função usando semaphoros 
     p(livre, mut);
     lock(teste);
     printf("Produtor criado\n");
@@ -70,10 +69,8 @@ void *produtor() {
 /* função bloqueia acesso a fila circular e retira um char da mesma
  */
 void *consumidor() {
+    
     printf("Consumidor criado\n");
- 
- 
-    //função usando semaphoros 
     p(ocupado, mut2);
     lock(teste);
     printf("Consumidor criado\n");
