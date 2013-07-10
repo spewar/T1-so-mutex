@@ -24,6 +24,17 @@ mutex *inicMutex(){
   return aux;
 }
 
+mutex *inic2Mutex(){
+  mutex *aux;
+  aux = (mutex *) malloc(sizeof(mutex));
+  if(aux == NULL){
+    printf("\nNão foi possivel alocar\n");
+    exit(0);
+  }
+  OPA_store_int(&aux->mut, 0); 
+  return aux;
+}
+
 void lock(mutex *mut) {
     while (1) {
         if (OPA_cas_int(&mut->mut, 1, 0)) {

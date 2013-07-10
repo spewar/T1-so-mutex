@@ -14,7 +14,7 @@
 #include <pthread.h>
 #include "fila.h"
 #include "sema.h"
-#define Quant 20  // define o numero de threads que será criado,
+#define Quant 6  // define o numero de threads que será criado,
                   // caso valor for maior que 50 tem que trocar os vetores das threads
 
 // prototipos das funções utilizadas
@@ -31,14 +31,16 @@ void main() {
     livre = inicSema(TAM);
     ocupado = inicSema(0);
     int i;
-    pthread_t prod[50], cons[50];
+    pthread_t prod[50], cons[50], prod2[20];
     printf("Começo da execução\n");
     for (i = 0; i < Quant; i++) {
         pthread_create(&prod[i], NULL, produtor, NULL);
+        pthread_create(&prod2[i], NULL, produtor, NULL);
         pthread_create(&cons[i], NULL, consumidor, NULL);
     }
     for (i = 0; i < Quant; i++) {
     pthread_join(prod[i], NULL);
+    pthread_join(prod2[i], NULL);
     pthread_join(cons[i], NULL);
     }
     printf("\n\nFila apos execução é\n");
@@ -50,18 +52,8 @@ void main() {
 /* função bloqueia acesso a fila circular e coloca um char m na fila
  */
 void *produtor() {
-    //execução funcionando mas não está paralela só usa o mutex
-//    lock(teste);
-//    printf("Produtor criado\n");
-//    while (bufferCheio()){
-//        unlock(teste);
-//        printf("Fila cheia\n");
-//        lock(teste);
-//    }
-//    inserir('m');
-//    unlock(teste);
-    
-    //função usando semaphoros mas não esta funcionando, tem que arrumar o semaphoro
+
+    //função usando semaphoros 
     p(livre, mut);
     lock(teste);
     printf("Produtor criado\n");
@@ -80,18 +72,8 @@ void *produtor() {
 void *consumidor() {
     printf("Consumidor criado\n");
  
-    //execução funcionando mas não está paralela
-//    lock(teste);
-//    printf("Consumidor criado\n");
-//    while (bufferVazio()){
-//        unlock(teste);
-//        printf("Fila vazia\n");
-//        lock(teste);
-//    }
-//    remover();
-//    unlock(teste);
-    
-    //função usando semaphoros mas não esta funcionando, tem que arrumar o semaphoro
+ 
+    //função usando semaphoros 
     p(ocupado, mut2);
     lock(teste);
     printf("Consumidor criado\n");

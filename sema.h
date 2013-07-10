@@ -1,15 +1,19 @@
-///* 
-// * File:   sema.h
-// * Author: marcelo
-// *
-// * Created on 8 de Julho de 2013, 18:20
-// */
-//
+/*
+ *
+ *       Universidade Federal de Pelotas
+ *           Sistemas Operacionais 
+ * Marcelo Machado, Jhonathan Juncal,  Maicon Cardoso
+ *        Mutex em produtor-consumidor
+ *                 2013/1
+ * 
+ */
+
 #include <pthread.h>
 
 typedef struct sema{
-    OPA_int_t cont;
-    int cont2;
+    OPA_int_t valor;
+    OPA_int_t mutex;
+    OPA_int_t block;
 }sema;
 
 sema *inicSema(int qtd);
