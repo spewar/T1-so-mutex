@@ -31,9 +31,8 @@ void p (sema *s, mutex *mut){
             continue;
         OPA_decr_int(&s->valor); //Decrementa a variavel de forma atomica.
         if (s->valor.v < 0) {
-            unlock(mut);
             OPA_store_int(&mut->mut, 0);
-            while (OPA_cas_int(&s->block, 0, 1))
+            while (OPA_cas_int(&s->block, 0, 1)) // tranca a thread
                 continue;
         } else {
             OPA_store_int(&mut->mut, 0);
@@ -45,7 +44,7 @@ void v(sema *s, mutex *mut) {
         continue;
     OPA_incr_int(&s->valor); //Incrementa a variavel atomicamente.
     if (s->valor.v <= 0) {
-        while (!s->block.v)
+        while (!s->block.v)  // libera a thread
             continue;
         OPA_store_int(&s->block, 0);
     }

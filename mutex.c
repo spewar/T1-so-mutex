@@ -20,7 +20,7 @@ mutex *inicMutex(){
     printf("\nNão foi possivel alocar\n");
     exit(0);
   }
-  OPA_store_int(&aux->mut, 1); 
+  OPA_store_int(&aux->mut, 1); // inicializa a variável mut com um
   return aux;
 }
 
@@ -31,18 +31,18 @@ mutex *inic2Mutex(){
     printf("\nNão foi possivel alocar\n");
     exit(0);
   }
-  OPA_store_int(&aux->mut, 0); 
+  OPA_store_int(&aux->mut, 0); // inicializa a variável mut com zero
   return aux;
 }
 
 void lock(mutex *mut) {
     while (1) {
-        if (OPA_cas_int(&mut->mut, 1, 0)) {
+        if (OPA_cas_int(&mut->mut, 1, 0)) { // tranca se mut é igual a zero
             break;
         }
     }
 }
 
 void unlock(mutex *mut) {
-    OPA_store_int(&mut->mut, 1);
+    OPA_store_int(&mut->mut, 1); // atribui o valor atomico um e libera o processo
 }
